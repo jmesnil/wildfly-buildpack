@@ -6,8 +6,8 @@
 ----
 $ ./create_builder.sh
 ...
-Successfully created builder image wildfly/wildfly:latest
-Tip: Run pack build <image-name> --builder wildfly/wildfly:latest to use this builder
+Successfully created builder image wildfly/wildfly-builder:latest
+Tip: Run pack build <image-name> --builder wildfly/wildfly-builder:latest to use this builder
 ----
 
 ## Clone the example application
@@ -22,7 +22,7 @@ $ git clone --branch buildpack https://github.com/jmesnil/wildfly-operator-demo-
 
 [source]
 ----
-$ pack build my-app --builder  wildfly/wildfly:latest --path wildfly-operator-demo-app
+$ pack build my-app --builder  wildfly/wildfly-builder:latest --path wildfly-operator-demo-app
 ...
 Successfully built image my-app
 ----

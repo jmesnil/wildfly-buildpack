@@ -1,3 +1,11 @@
+##################
+# The base image #
+##################
+
+# The base image is based on OpenJDK
+# and is the base image for both the
+# build and run images
+
 FROM adoptopenjdk:11-jdk as base
 
 ENV CNB_USER_ID=1000
@@ -11,29 +19,30 @@ RUN groupadd -r jboss -g ${CNB_GROUP_ID} && useradd -u ${CNB_USER_ID} -r -g jbos
 # Set the working directory to jboss' user home directory
 WORKDIR /opt/jboss
 
+###############################################################################
+
+#################
+# The run image #
+#################
+
+# The run image does not add anything to the base image
+# expect it runs as the jboss user
 FROM base as run
-
-#ENV WILDFLY_VERSION 23.0.0.Final
-#ENV WILDFLY_SHA1 b06fab856140226dc499855f324c3e134517455f
-#ENV JBOSS_HOME /opt/jboss/wildfly
-
-# Add the WildFly distribution to /opt, and make wildfly the owner of the extracted tar content
-# Make sure the distribution is available from a well-known place
-#RUN cd $HOME \
-#    && curl -O https://download.jboss.org/wildfly/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.tar.gz \
-#    && sha1sum wildfly-$WILDFLY_VERSION.tar.gz | grep $WILDFLY_SHA1 \
-#    && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
-#    && mv $HOME/wildfly-$WILDFLY_VERSION $JBOSS_HOME \
-#    && rm wildfly-$WILDFLY_VERSION.tar.gz \
-#    && chown -R jboss:0 ${JBOSS_HOME} \
-#    && chmod -R g+rw ${JBOSS_HOME}
-
-ENV LAUNCH_JBOSS_IN_BACKGROUND true
 
 USER jboss
 
 # Expose the ports we're interested in
 EXPOSE 8080
+EXPOSE 9900
+
+###############################################################################
+
+###################
+# The build image #
+###################
+
+# The build image installs Maven to package the Java application
+# and Galleon to provision the WildFly server
 
 FROM base as build
 
@@ -47,12 +56,10 @@ RUN mkdir -p /usr/share/maven \
     && tar -xzC /usr/share/maven --strip-components=1 -f /tmp/maven.tar.gz \
     && rm -v /tmp/maven.tar.gz \
     && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
-
-RUN  apt-get -y update \
+RUN apt-get -y update \
      && apt-get -y autoremove \
      && apt-get clean \
      && apt-get install -y unzip
-
 ENV GALLEON_VERSION 4.2.8.Final
 ENV GALLEON_HOME /opt/jboss/galleon
 
