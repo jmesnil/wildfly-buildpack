@@ -52,3 +52,11 @@ cat >> "${layers_dir}/launch.toml" <<EOL
 type = "web"
 command = "/layers/wildfly_wildfly/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0"
 EOL
+
+# 9. ADD A BOM
+cat >> "${layers_dir}/launch.toml" <<EOL
+[[bom]]
+name = "java"
+[bom.metadata]
+version = "11.0"
+EOL
