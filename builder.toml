@@ -1,0 +1,18 @@
+# Buildpacks to include in builder
+[[buildpacks]]
+uri = "buildpacks/wildfly"
+
+# Order used for detection
+[[order]]
+    # This buildpack will display build-time information (as a dependency)
+    [[order.group]]
+    id = "wildfly/wildfly"
+    version = "0.0.1"
+
+# Stack that will be used by the builder
+[stack]
+id = "org.wildfly.stacks.base"
+# This image is used at runtime
+run-image = "wildfly/wildfly-run:latest"
+# This image is used at build-time
+build-image = "wildfly/wildfly-build:latest"

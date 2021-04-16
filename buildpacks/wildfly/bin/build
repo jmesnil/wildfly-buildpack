@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+echo "---> Java buildpack"
+
+# 1. GET ARGS
+layers_dir="$1"
+env_dir="$2/env"
+plan_path="$3"
+
+# 2. LOAD USER-PROVIDED BUILD-TIME ENVIRONMENT VARIABLES
+if compgen -G "${env_dir}/*" > /dev/null; then
+  for var in ${env_dir}/*; do
+    declare "$(basename ${var})=$(<${var})"
+  done
+fi
+
+# 4. MAKE MAVEN M2 CACHE LAYER
+m2_layer_dir="${layers_dir}/maven_m2"
+if [[ ! -d ${m2_layer_dir} ]]; then
+  mkdir -p ${m2_layer_dir}
+  echo "cache = true" > ${m2_layer_dir}.toml
+fi
+ln -s ${m2_layer_dir} $HOME/.m2
+
+# 5. MAKE WildFly LAYER
+
+echo "---> Provision WildFly"
+GALLEON_HOME=/opt/jboss/galleon
+wildfly_layer_dir="${layers_dir}/wildfly"
+if [[ ! -d ${wildfly_layer_dir} ]]; then
+  mkdir -p ${wildfly_layer_dir}
+  echo "cache = true" > ${wildfly_layer_dir}.toml
+  echo "launch = true" > ${wildfly_layer_dir}.toml
+fi
+${GALLEON_HOME}/bin/galleon.sh provision src/main/resources/galleon/provisioning.xml --dir=${wildfly_layer_dir} 
+
+# 5. RUN BUILD
+MAVEN_OPTS="${MAVEN_OPTS:-"-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"}"
+
+echo "---> Running Maven Wrapper"
+mvn clean install -B -DskipTests
+
+echo "---> Keep Jar"
+for jar_file in $(find "target" -maxdepth 1 -name "*.war" -type f); do
+  cp -rf ${jar_file} ${wildfly_layer_dir}/standalone/deployments
+done;
+
+# 6. SET DEFAULT START COMMAND
+cat >> "${layers_dir}/launch.toml" <<EOL
+[[processes]]
+type = "web"
+command = "/layers/wildfly_wildfly/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0"
+EOL

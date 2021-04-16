@@ -1,0 +1,13 @@
+# Buildpack API version
+api = "0.5"
+
+# Buildpack ID and metadata
+[buildpack]
+id = "wildfly/wildfly"
+version = "0.0.1"
+name = "WildFly Buildpack"
+
+[[stacks]]
+id = "org.wildfly.stacks.base"
+run-image = "wildfly/wildfly-run:latest"
+build-image = "wildfly/wildfly-build:latest"

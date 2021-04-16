@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+echo "---> WildFly detect Buildpack"
+
+# 1. CHECK IF APPLICABLE
+if [[ ! -f pom.xml ]]; then
+    exit 100
+fi
+echo "---> Maven pom.xml file detected"
+
+if [[ ! -f src/main/resources/galleon/provisioning.xml ]]; then
+   echo "No Galleon provisioning file detected at src/main/resources/galleon/provisioning.xml"
+   exit 1OO
+fi
+echo "---> Galleon provisioning file detected"

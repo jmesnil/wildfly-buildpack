@@ -1,0 +1,53 @@
+# BuildPack for WildFly
+
+## Build the builder
+
+[source]
+----
+$ ./create_builder.sh
+...
+Successfully created builder image wildfly/wildfly:latest
+Tip: Run pack build <image-name> --builder wildfly/wildfly:latest to use this builder
+----
+
+## Clone the example application
+
+[source]
+----
+$ cd ..
+$ git clone --branch buildpack https://github.com/jmesnil/wildfly-operator-demo-app.git
+----
+
+## Create the application image
+
+[source]
+----
+$ pack build my-app --builder  wildfly/wildfly:latest --path wildfly-operator-demo-app
+...
+Successfully built image my-app
+----
+
+## Run the application image
+
+[source]
+----
+$ docker run -e GREETINGS='Ahoj' -p 8080:8080 p 9990:9990 my-app
+----
+
+## Test the application image
+
+We can access the application endpoint:
+
+[source]
+----
+$ curl http://:8080/
+{"text":"AHOJ, WORLD!"}
+----
+
+We can access the healtiness endpoints:
+
+[source]
+----
+$ curl  http://:9990/health/ready
+{"status":"UP","checks":[{"name":"server-state","status":"UP","data":{"value":"running"}},{"name":"deployments-status","status":"UP","data":{"ROOT.war":"OK"}},{"name":"boot-errors","status":"UP"},{"name":"ready-deployment.ROOT.war","status":"UP"}]}
+----
