@@ -34,6 +34,7 @@ if [[ ! -d ${wildfly_layer_dir} ]]; then
   echo "launch = true" > ${wildfly_layer_dir}.toml
 fi
 ${GALLEON_HOME}/bin/galleon.sh provision src/main/resources/galleon/provisioning.xml --dir=${wildfly_layer_dir} 
+${GALLEON_HOME}/bin/galleon.sh get-info --dir ${wildfly_layer_dir} --type configs >> /tmp/galleon-config
 
 # 5. RUN BUILD
 MAVEN_OPTS="${MAVEN_OPTS:-"-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"}"
@@ -53,10 +54,18 @@ type = "web"
 command = "/layers/wildfly_wildfly/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0"
 EOL
 
+
 # 9. ADD A BOM
 cat >> "${layers_dir}/launch.toml" <<EOL
 [[bom]]
 name = "java"
 [bom.metadata]
 version = "11.0"
+
+[[bom]]
+name = "galleon"
+[bom.metadata]
+config ="""
 EOL
+cat /tmp/galleon-config >> "${layers_dir}/launch.toml"
+echo '"""' >> "${layers_dir}/launch.toml"
