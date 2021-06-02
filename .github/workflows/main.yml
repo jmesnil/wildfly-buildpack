@@ -41,7 +41,7 @@ jobs:
           username: ${{ env.REGISTRY_USER }}
           password: ${{ env.REGISTRY_PASSWORD }}
       - name: Push Images To Registry
-        run: >
+        run: |-
          docker push ${{ env.REGISTRY }}wildfly-builder:latest
          docker push ${{ env.REGISTRY }}wildfly-build:latest
          docker push ${{ env.REGISTRY }}wildfly-run:latest
