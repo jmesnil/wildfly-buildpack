@@ -43,12 +43,12 @@ jobs:
       - name: Push Builder Image To Registry
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ env.REGISTRY}wildfly-builder:latest
+          image: ${{ env.REGISTRY }}wildfly-builder:latest
       - name: Push Build Image To Registry
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ env.REGISTRY}wildfly-buil:latest
+          image: ${{ env.REGISTRY }}wildfly-buil:latest
       - name: Push Run Image To Registry
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ env.REGISTRY}wildfly-run:latest
+          image: ${{ env.REGISTRY }}wildfly-run:latest
