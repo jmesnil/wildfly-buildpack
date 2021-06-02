@@ -12,7 +12,3 @@ uri = "buildpacks/wildfly"
 # Stack that will be used by the builder
 [stack]
 id = "org.wildfly.stacks.base"
-# This image is used at runtime
-run-image = "wildfly/wildfly-run:latest"
-# This image is used at build-time
-build-image = "wildfly/wildfly-build:latest"
