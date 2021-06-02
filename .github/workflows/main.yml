@@ -40,18 +40,8 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ env.REGISTRY_USER }}
           password: ${{ env.REGISTRY_PASSWORD }}
-      - name: Push Builder Image To Registry
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          image: wildfly-builder
-      - name: Push Build Image To Registry
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          image: wildfly-build
-      - name: Push Run Image To Registry
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          image: wildfly-run
+      - name: Push Images To Registry
+        run: >
+         docker push ${{ env.REGISTRY }}wildfly-builder:latest
+         docker push ${{ env.REGISTRY }}wildfly-build:latest
+         docker push ${{ env.REGISTRY }}wildfly-run:latest
