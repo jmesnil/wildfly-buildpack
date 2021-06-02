@@ -3,7 +3,7 @@
 name: Build WildFly Buildpack
 
 env:
-  REGISTRY: quay.io/${{ secrets.REGISTRY_NAMESPACE }}
+  REGISTRY: quay.io/${{ secrets.REGISTRY_NAMESPACE }}/
   REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
   REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
   
