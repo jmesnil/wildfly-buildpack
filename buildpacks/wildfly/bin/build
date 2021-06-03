@@ -62,7 +62,7 @@ name = "java"
 [bom.metadata]
 config = """
 EOL
-java -version >> "${layers_dir}/launch.toml"
+java -version &>> "${layers_dir}/launch.toml"
 echo '"""' >> "${layers_dir}/launch.toml"
 
 cat >> "${layers_dir}/launch.toml" <<EOL
