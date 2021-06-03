@@ -60,8 +60,12 @@ cat >> "${layers_dir}/launch.toml" <<EOL
 [[bom]]
 name = "java"
 [bom.metadata]
-version = "11.0"
+config = """
+EOL
+java -version >> "${layers_dir}/launch.toml"
+echo '"""' >> "${layers_dir}/launch.toml"
 
+cat >> "${layers_dir}/launch.toml" <<EOL
 [[bom]]
 name = "galleon"
 [bom.metadata]
