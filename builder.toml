@@ -12,3 +12,7 @@ uri = "buildpacks/wildfly"
 # Stack that will be used by the builder
 [stack]
 id = "org.wildfly.stacks.base"
+# run-image and build-image are missing on purpose
+# as they will be appended in create-builder.sh
+# based on the registry hosting the three images
+# (builder, build, run)
